@@ -1,0 +1,20 @@
+<table class="table table-striped table-sm w-50" id="results" align="center">
+    <thead>
+        <tr>
+           
+            <th id="title">Title</th>
+            <th id="link">link</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {{{log news}}}
+        {{#each news}}
+        <tr>
+            <td>{{title}}</td>
+            <td>{{link}}</td>
+           
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
