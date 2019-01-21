@@ -1,6 +1,8 @@
 var newsModel = require('../models/newsModel.js');
+var Note = require('../models/Note.js');
 var axios = require("axios");
 var cheerio = require("cheerio");
+var mongojs = require("mongojs");
 /**
  * newsController.js
  *
@@ -15,12 +17,28 @@ module.exports = {
         newsModel.find(function (err, newss) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting news1.',
+                    message: 'Error when getting news.',
                     error: err
                 });
             }
-            //console.log(newss);
-            return res.render('home',{news:newss});
+            return res.render('home', { news: newss });
+        });
+    },
+
+    /**
+     * newsController.list()
+     */
+    listSaved: function (req, res) {
+
+        console.log("List Saved")
+        newsModel.find({ saved: true }, function (err, newss) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting news.',
+                    error: err
+                });
+            }
+            return res.render('home', { news: newss });
         });
     },
 
@@ -29,26 +47,20 @@ module.exports = {
      * newsController.show()
      */
     show: function (req, res) {
-        var id = req.params.id;
-        newsModel.findOne({ _id: id }, function (err, news) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting news2.',
-                    error: err
-                });
-            }
-            if (!news) {
-                return res.status(404).json({
-                    message: 'No such news'
-                });
-            }
-            return res.json(news);
-        });
-    },
+        newsModel.findOne({ _id: req.params.id })
+            .populate("note")
+            .then(function (dbNotes) {
 
+                return res.json(news);
+            })
+            .catch(function (err) {
+                // If an error occurs, send it back to the client
+                res.json(err);
+            });
+    },
     /**
-    * newsController.create()
-    */
+       * newsController.create()
+       */
     scrap: function (req, res) {
         axios.get("https://www.nhl.com/").then(function (response) {
 
@@ -60,17 +72,21 @@ module.exports = {
 
             // With cheerio, find each h4-tag with the class "headline-link" and loop through the results
             $("h4.headline-link").each(function (i, element) {
-
+                console.log(element)
                 // Save the text of the h4-tag as "title"
                 var title = $(element).text();
 
                 // Find the h4 tag's parent a-tag, and save it's href value as "link"
                 var link = $(element).parent().attr("href");
 
+                var summary = $(element).next('h5').text()
+
                 // Make an object with data we scraped for this h4 and push it to the results array
                 results.push({
                     title: title,
-                    link: link
+                    link: link,
+                    summary: summary,
+                    saved: false
                 });
             });
             console.log(results);
@@ -85,18 +101,41 @@ module.exports = {
             });
         })
     },
+    /**
+     * newsController.create()
+     */
+    createNote: function (req, res) {
+        console.log("enter");
+        console.log("Id" + req.params.id);
+        Note.create(req.body)
+            .then(function (dbNote) {
+                return newsModel.findOneAndUpdate(
+                    {
+                        _id: req.params.id
+                    },
+                    { notes: dbNote._id },
+                    { new: true });
+            }).then(function (dbArticle) {
+                res.json(dbArticle);
+            }).catch(function (err) {
+                res.json(err);
+            })
+    },
 
     /**
      * newsController.create()
      */
     create: function (req, res) {
         var news = new newsModel({
-        	title : req.body.title,
-        	link : req.body.link
+            title: req.body.title,
+            link: req.body.link,
+            summary: req.body.summary,
+            saved: req.body.saved,
+            notes: req.body.notes
 
         });
 
-        news.create(req.body, function (err, news) {
+        news.save(function (err, news) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when creating news',
@@ -112,33 +151,35 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        newsModel.findOne({ _id: id }, function (err, news) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting news',
-                    error: err
-                });
-            }
-            if (!news) {
+
+        newsModel.where({ _id: id }).updateOne({ saved: req.body.saved }, function (err, newss) {
+            if (!newss) {
                 return res.status(404).json({
                     message: 'No such news'
                 });
             }
 
-            news.title = req.body.title ? req.body.title : news.title;
-            news.link = req.body.link ? req.body.link : news.link;
 
-            news.save(function (err, news) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when updating news.',
-                        error: err
-                    });
-                }
+            return res.render('home', { newss: newss, saved: true });
 
-                return res.json(news);
+        })
+
+    },
+    /**
+     * newsController.show()
+     */
+    showNote: function (req, res) {
+        console.log ("Note", req.params.id)
+        Note.findOne({ _id: req.params.id })
+            
+            .then(function (dbNote) {
+
+                return res.json(dbNote);
+            })
+            .catch(function (err) {
+                // If an error occurs, send it back to the client
+                res.json(err);
             });
-        });
     },
 
     /**

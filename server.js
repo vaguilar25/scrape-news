@@ -41,12 +41,13 @@ app.set('view engine', 'handlebars');
 
 var news = require('./routes/newsRoutes.js');
 
+
 //app.use('/', routes);
 app.use(news);
 
-// Syncing our sequelize models and then starting our Express app
+
 // =============================================================
-mongoose.connect("mongodb://localhost/scraperDB", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/scrap", { useNewUrlParser: true });
 mongoose.set('debug', true);
 
   app.listen(PORT, function() {

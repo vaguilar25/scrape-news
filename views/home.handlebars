@@ -1,20 +1,38 @@
-<table class="table table-striped table-sm w-50" id="results" align="center">
+<table class="table table-striped  w-50" id="results" align="center">
     <thead>
         <tr>
-           
+
             <th id="title">Title</th>
-            <th id="link">link</th>
+            <th id="link">summary</th>
+            <th></th>
+            <th></th>
+
 
         </tr>
     </thead>
     <tbody>
-        {{{log news}}}
+
         {{#each news}}
         <tr>
             <td>{{title}}</td>
-            <td>{{link}}</td>
-           
+            <td>{{summary}}</td>
+
+
+            {{#if saved}}
+            <td><button type="button" data-id={{_id}} class="btn btn-primary remove"> Remove</button></td>
+                {{#if notes}}
+                <td><button type="button" data-id={{_id}} data-note={{notes}} data-newstitle="{{{title}}}"class="btn btn-primary addNote"> View Note</button></td>
+                {{else}}
+                    <td><button type="button" data-id={{_id}} data-newstitle="{{{title}}}" class="btn btn-primary addNote"> Add Note</button></td>
+                {{/if}}
+            {{else}}
+
+
+            <td><button type="button" data-id={{_id}} class="btn btn-primary save"> Save</button></td>
+            <td></td>
+            {{/if}}
         </tr>
+        {{> notes/notes}}
         {{/each}}
     </tbody>
 </table>
