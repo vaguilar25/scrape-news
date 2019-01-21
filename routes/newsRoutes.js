@@ -7,6 +7,11 @@ var newsController = require('../controllers/newsController.js');
  * POST NOTE
  */
 router.post('/notes/:id', newsController.createNote);
+
+/*
+ * Note Update
+ */
+router.post('/notesUpdate/:id', newsController.updateNote);
 /*
  * GET NOTE
  */
@@ -24,7 +29,10 @@ router.get('/scrap',newsController.scrap);
 
 router.get('/saved',newsController.listSaved);
 
-
+/*
+ * DELETE
+ */
+router.delete('/delete/:id', newsController.remove);
 
 /*
  * GET
@@ -41,9 +49,6 @@ router.post('/', newsController.create);
  */
 router.put('/:id', newsController.update);
 
-/*
- * DELETE
- */
-router.delete('/:id', newsController.remove);
+
 
 module.exports = router;

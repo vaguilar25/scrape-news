@@ -21,21 +21,23 @@ $(function () {
                     console.log(data);
                     // Empty the notes section
                     $(".modal-title").html("<b>Add Note to <br> " + newsTitle)
-                    $("#titleinput"+projectId).val(data.title);
+                    $("#titleinput" + projectId).val(data.title);
                     // Value taken from note textarea
-                    $("#bodyinput"+projectId).val(data.body);
+                    $("#bodyinput" + projectId).val(data.body);
                     console.log("noteId" + noteId)
                     console.log("projectId" + projectId)
-                    $("#project2"+projectId).attr("update", "true");
-                    $("#project2"+projectId).attr("noteId", noteId);
+
+
+                    $("#project2" + projectId).attr("update", "true");
+                    $("#project2" + projectId).attr("noteid", noteId);
                     $('#modal' + projectId).show();
 
                 });
         } else {
             console.log("ADD Modal", projectId)
             $('#modal' + projectId).show();
-           // $("#titleinput").val("");
-          //  $("#bodyinput").val("");
+            // $("#titleinput").val("");
+            //  $("#bodyinput").val("");
             $(".modal-title").html("<b>Add Note to <br> " + newsTitle);
             $("#submitButton").data(projectId);
         }
@@ -44,8 +46,8 @@ $(function () {
     $(".close").on("click", function (event) {
         var projectId = $(this).data('id')
         console.log("close" + projectId)
-     //   $("#titleinput").val("");
-     //   $("#bodyinput").val("");
+        //   $("#titleinput").val("");
+        //   $("#bodyinput").val("");
         $('#modal' + projectId).toggle();
 
     })
@@ -54,42 +56,73 @@ $(function () {
     $("#closeButton").on("click", function (event) {
         $('.modal').toggle();
     })
-   
-   // $(document).on("submit", ".submitButton", function (event) {
+
+    // $(document).on("submit", ".submitButton", function (event) {
     $(".saveModal").on("click", function (event) {   // Make sure to preventDefault on a submit event.
         event.preventDefault();
         var thisId = $(this).attr("data-id");
-        var titleNote = $("#titleinput"+thisId).val()
-        var bodyNote = $("#bodyinput"+thisId).val()
-        console.log("Title" , title);
-        console.log("Body" , bodyNote);
-
-        var noteId = $("project2"+thisId).data(update)
-        console.log("Note Update" , noteId)
-        $.ajax({
-            method: "POST",
-            url: "/notes/" + thisId,
-            data: {
-                // Value taken from title input
-                title: titleNote,
-                // Value taken from note textarea
-                body: bodyNote
-            }
-        })
-            // With that done
-            .then(function (data) {
-                // Log the response
-                console.log(data);
-                // Empty the notes section
-               
-                console.log("close" + thisId)
-           //     $("#titleinput").val("");
-            //    $("#bodyinput").val("");
-                $('#modal' + thisId).toggle();
-                location.href = "/"
-            });
+        var titleNote = $("#titleinput" + thisId).val()
+        var bodyNote = $("#bodyinput" + thisId).val()
+        console.log("Title", title);
+        console.log("Body", bodyNote);
 
 
+        console.log("hidden", $("#project2" + thisId).attr("noteid"));
+
+
+        var noteId = $("#project2" + thisId).attr("noteid")
+        var update = $("#project2" + thisId).attr("update")
+        if (update != "true") {
+            $.ajax({
+                method: "POST",
+                url: "/notes/" + thisId,
+                data: {
+                    // Value taken from title input
+                    title: titleNote,
+                    // Value taken from note textarea
+                    body: bodyNote
+                }
+            })
+                // With that done
+                .then(function (data) {
+                    // Log the response
+                    console.log(data);
+                    // Empty the notes section
+
+                    console.log("close" + thisId)
+                    //     $("#titleinput").val("");
+                    //    $("#bodyinput").val("");
+                    $('#modal' + thisId).toggle();
+                    location.href = "/saved"
+                });
+
+        } else {
+            console.log(update)
+
+            $.ajax({
+                method: "POST",
+                url: "/notesUpdate/" + noteId,
+                data: {
+                    // Value taken from title input
+                    title: titleNote,
+                    // Value taken from note textarea
+                    body: bodyNote
+                }
+            })
+                // With that done
+                .then(function (data) {
+                    // Log the response
+                    console.log(data);
+                    // Empty the notes section
+
+                    console.log("close" + thisId)
+                    //     $("#titleinput").val("");
+                    //    $("#bodyinput").val("");
+                    $('#modal' + thisId).toggle();
+                    location.href = "/saved"
+                });
+
+        }
     })
     $(".save").on("click", function (event) {
 
@@ -124,15 +157,16 @@ $(function () {
 
 
         var thisId = $(this).data('id')
-
+        var noteId= $(this).data('noteid')
+        console.log("Delete")
         $.ajax({
-            method: "PUT",
-            url: "/" + thisId,
+            method: "DELETE",
+            url: "/delete/" + thisId,
             data: {
                 // Value taken from title input
-                saved: false
+                saved: false,
                 // Value taken from note textarea
-
+                noteId:noteId
             }
         })
             // With that done

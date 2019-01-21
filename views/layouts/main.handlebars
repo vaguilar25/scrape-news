@@ -14,12 +14,10 @@
   
 
 
-
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-        crossorigin="anonymous">
+
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -29,11 +27,32 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous">
+        
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+
+
     <link rel="stylesheet" href="/css/style.css">
    <script src="/js/app.js"></script>
 </head>
 
 <body>
+    <div class="nav-scroller py-1 mb-2">
+        <nav class="nav d-flex ">
+          <a class="p-2 text-muted" href="/">Home</a>
+          <a class="p-2 text-muted" href="/saved">Saved Articles</a>
+          <a class="p-2 text-muted" href="/scrap">Scrape New Articles</a>
+          
+        </nav>
+      </div>
+    <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark text-center">
+        <div class="col-md-12 ">
+          <h1 class="display-4 fontHeader">scrape - it</h1>
+          
+          <p class="lead mb-0"><a href="/scrap" class="text-white font-weight-bold">Get the news from WWW.NHL.COM</a></p>
+        </div>
+      </div>
     {{{body}}}
    
 </body>
