@@ -112,7 +112,7 @@ $(function () {
                     //     $("#titleinput").val("");
                     //    $("#bodyinput").val("");
                     $('#modal' + thisId).toggle();
-                        = "/"
+                    window.location = "/"
                 });
 
         } else {
