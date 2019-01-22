@@ -49,6 +49,7 @@ app.use(news);
 // =============================================================
 mongoose.connect("mongodb://localhost/scrap", { useNewUrlParser: true });
 mongoose.set('debug', true);
+mongoose.Promise = global.Promise
 
   app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);

@@ -22,3 +22,9 @@
     font-family: 'Roboto Mono', monospace;
     align-content: center
 }
+
+.btn-xs {
+    white-space: nowrap;
+    font-size: 12px;
+ 
+}

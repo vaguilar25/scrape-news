@@ -2,7 +2,8 @@ var newsModel = require('../models/newsModel.js');
 var Note = require('../models/Note.js');
 var axios = require("axios");
 var cheerio = require("cheerio");
-var mongojs = require("mongojs");
+
+//mongoose.Promise = global.Promise
 /**
  * newsController.js
  *
@@ -56,7 +57,18 @@ module.exports = {
        * newsController.create()
        */
     scrap: function (req, res) {
-        axios.get("https://www.nhl.com/").then(function (response) {
+
+        async function getAxiosData() {
+            try {
+                return await axios.get('https://www.nhl.com/')
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        
+        async function processData() {
+            var response = await getAxiosData();
 
             // Load the body of the HTML into cheerio
             var $ = cheerio.load(response.data);
@@ -66,7 +78,7 @@ module.exports = {
 
             // With cheerio, find each h4-tag with the class "headline-link" and loop through the results
             $("h4.headline-link").each(function (i, element) {
-                console.log(element)
+                //console.log(element)
                 // Save the text of the h4-tag as "title"
                 var title = $(element).text();
 
@@ -77,7 +89,7 @@ module.exports = {
 
                 // Make an object with data we scraped for this h4 and push it to the results array
 
-                
+
 
                 results.push({
                     title: title,
@@ -86,20 +98,40 @@ module.exports = {
                     saved: false
                 });
             });
-            console.log(results);
+         
+            var newNews = [];
+            for (i = 0; i < results.length; i++) {
+                console.log("RESULT", results[i].link)
+                //for use await use try and catch
+                try {
+                    var news = await newsModel.findOne({ link: results[i].link })
 
-            
+                    console.log("LOG", news)
+                    if (news ===null) {
+                        newNews.push(results[i])
+                    }
 
-            newsModel.create(results, function (err, news) {
+                } catch (e) {
+                    console.log(e);
+                    
+                }
+              
+            }
+
+            newsModel.create(newNews, function (err, news) {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when creating news3',
                         error: err
                     });
                 }
-                return res.status(201).json(news);
+                return res.redirect('/?newArticles='+newNews.length)
             });
-        })
+        }
+
+        processData()
+
+
     },
 
     /**

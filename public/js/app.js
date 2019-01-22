@@ -1,4 +1,22 @@
+
+
 $(function () {
+
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+    var newData = GetURLParameter('newArticles')
+    console.log ("New Data", newData)
+    if (typeof (newData) != "undefined") {
+        $('.jumbotron').append("<p class=text-danger ><b>New Articles <br><p class=text-danger>" + newData + "</b></p>");
+    } 
 
     $(".addNote").on("click", function (event) {
 
@@ -49,6 +67,7 @@ $(function () {
         //   $("#titleinput").val("");
         //   $("#bodyinput").val("");
         $('#modal' + projectId).toggle();
+        window.location('/')
 
     })
 
@@ -93,7 +112,7 @@ $(function () {
                     //     $("#titleinput").val("");
                     //    $("#bodyinput").val("");
                     $('#modal' + thisId).toggle();
-                    location.href = "/saved"
+                        = "/"
                 });
 
         } else {
@@ -119,7 +138,7 @@ $(function () {
                     //     $("#titleinput").val("");
                     //    $("#bodyinput").val("");
                     $('#modal' + thisId).toggle();
-                    location.href = "/saved"
+                    window.location = "/"
                 });
 
         }
@@ -157,7 +176,7 @@ $(function () {
 
 
         var thisId = $(this).data('id')
-        var noteId= $(this).data('noteid')
+        var noteId = $(this).data('noteid')
         console.log("Delete")
         $.ajax({
             method: "DELETE",
@@ -166,7 +185,7 @@ $(function () {
                 // Value taken from title input
                 saved: false,
                 // Value taken from note textarea
-                noteId:noteId
+                noteId: noteId
             }
         })
             // With that done
