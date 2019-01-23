@@ -14,8 +14,8 @@ module.exports = {
     /**
      * newsController.list()
      */
+   
     list: function (req, res) {
-        console.log("test populate")
 
         newsModel.find().populate('notes').then(function (newss) {
             // newsModel.find( function (err, newss) {
@@ -25,8 +25,9 @@ module.exports = {
     },
 
     /**
-     * newsController.list()
+     * newsController.listSaved() Get all saved news
      */
+    
     listSaved: function (req, res) {
 
         console.log("List Saved")
@@ -39,7 +40,7 @@ module.exports = {
 
 
     /**
-     * newsController.show()
+     * newsController.show() Find onde news with the note
      */
     show: function (req, res) {
         newsModel.findOne({ _id: req.params.id })
@@ -54,7 +55,7 @@ module.exports = {
             });
     },
     /**
-       * newsController.create()
+       * newsController.create() Scrap News
        */
     scrap: function (req, res) {
 
@@ -66,7 +67,7 @@ module.exports = {
             }
         }
 
-        
+        //use await insite async function
         async function processData() {
             var response = await getAxiosData();
 
@@ -117,7 +118,7 @@ module.exports = {
                 }
               
             }
-
+            //crate new news only
             newsModel.create(newNews, function (err, news) {
                 if (err) {
                     return res.status(500).json({
@@ -135,16 +136,13 @@ module.exports = {
     },
 
     /**
-     * newsController.create()
+     * newsController.create() create note for news
      */
     createNote: function (req, res) {
-        console.log("enter");
-        console.log("Id" + req.params.id);
+     
         Note.create(req.body)
             .then(function (dbNote) {
                 return newsModel.findOneAndUpdate(
-
-
                     {
                         _id: req.params.id
                     }, {
@@ -171,8 +169,6 @@ module.exports = {
                     message: 'No such news'
                 });
             }
-
-
             return res.render('home', { newss: newss, saved: true });
 
         })
@@ -181,7 +177,7 @@ module.exports = {
 
     /**
     /**
-     * newsController.create()
+     * newsController.create() Create news only
      */
     create: function (req, res) {
         var news = new newsModel({
@@ -205,13 +201,13 @@ module.exports = {
     },
 
     /**
-     * newsController.update()
+     * newsController.update() Update note
      */
     update: function (req, res) {
-        console.log(req.body)
+
         var id = req.params.id;
         var noteId = req.body.noteId
-        console.log("NOTA:", noteId)
+        //Update news that have notes
         if (typeof (noteId) != "undefined") {
             Note.findByIdAndRemove(noteId).then(function (dbNote) {
                 newsModel.where({ _id: id }).updateOne({ saved: req.body.saved }, function (err, newss) {
@@ -229,6 +225,7 @@ module.exports = {
                 })
             })
         } else {
+            // update news that have empty notes
             newsModel.where({ _id: id }).updateOne({ saved: req.body.saved }, function (err, newss) {
                 if (!newss) {
                     return res.status(404).json({
@@ -270,7 +267,7 @@ module.exports = {
     remove: function (req, res) {
         var id = req.params.id;
         var noteId = req.body.noteId
-        console.log("NOTA DElete:", noteId)
+       //Remove news that have notes
         if (typeof (noteId) != "undefined") {
             newsModel.findByIdAndRemove(id).then(function (dbNote) {
 
@@ -287,6 +284,7 @@ module.exports = {
             })
 
         } else {
+             //Remove news that have notes
             newsModel.findByIdAndRemove(id, function (err, news) {
                 if (err) {
                     return res.status(500).json({

@@ -13,18 +13,18 @@ $(function () {
         }
     }
     var newData = GetURLParameter('newArticles')
-    console.log ("New Data", newData)
+    console.log("New Data", newData)
     if (typeof (newData) != "undefined") {
         $('.jumbotron').append("<p class=text-danger ><b>New Articles <br><p class=text-danger>" + newData + "</b></p>");
-    } 
+    }
 
     $(".addNote").on("click", function (event) {
 
         var projectId = $(this).data('id')
-        console.log("Proyecto ID", projectId);
+ 
         var noteId = $(this).data('note')
         var newsTitle = $(this).data('newstitle')
-        console.log("noteId", noteId)
+      
         if (typeof (noteId) != "undefined") {
             console.log("Get Note")
 
@@ -42,9 +42,7 @@ $(function () {
                     $("#titleinput" + projectId).val(data.title);
                     // Value taken from note textarea
                     $("#bodyinput" + projectId).val(data.body);
-                    console.log("noteId" + noteId)
-                    console.log("projectId" + projectId)
-
+                  
 
                     $("#project2" + projectId).attr("update", "true");
                     $("#project2" + projectId).attr("noteid", noteId);
@@ -54,8 +52,7 @@ $(function () {
         } else {
             console.log("ADD Modal", projectId)
             $('#modal' + projectId).show();
-            // $("#titleinput").val("");
-            //  $("#bodyinput").val("");
+          
             $(".modal-title").html("<b>Add Note to <br> " + newsTitle);
             $("#submitButton").data(projectId);
         }
@@ -63,9 +60,7 @@ $(function () {
 
     $(".close").on("click", function (event) {
         var projectId = $(this).data('id')
-        console.log("close" + projectId)
-        //   $("#titleinput").val("");
-        //   $("#bodyinput").val("");
+
         $('#modal' + projectId).toggle();
         window.location('/')
 
@@ -82,12 +77,6 @@ $(function () {
         var thisId = $(this).attr("data-id");
         var titleNote = $("#titleinput" + thisId).val()
         var bodyNote = $("#bodyinput" + thisId).val()
-        console.log("Title", title);
-        console.log("Body", bodyNote);
-
-
-        console.log("hidden", $("#project2" + thisId).attr("noteid"));
-
 
         var noteId = $("#project2" + thisId).attr("noteid")
         var update = $("#project2" + thisId).attr("update")
@@ -109,8 +98,6 @@ $(function () {
                     // Empty the notes section
 
                     console.log("close" + thisId)
-                    //     $("#titleinput").val("");
-                    //    $("#bodyinput").val("");
                     $('#modal' + thisId).toggle();
                     window.location = "/"
                 });
@@ -135,8 +122,6 @@ $(function () {
                     // Empty the notes section
 
                     console.log("close" + thisId)
-                    //     $("#titleinput").val("");
-                    //    $("#bodyinput").val("");
                     $('#modal' + thisId).toggle();
                     window.location = "/"
                 });
@@ -161,10 +146,7 @@ $(function () {
         })
             // With that done
             .then(function (data) {
-                // Log the response
-                console.log(data);
-                // Empty the notes section
-                //location.href = "/saved"
+
                 location.href = "/"
 
 
@@ -177,7 +159,7 @@ $(function () {
 
         var thisId = $(this).data('id')
         var noteId = $(this).data('noteid')
-        console.log("Delete")
+
         $.ajax({
             method: "DELETE",
             url: "/delete/" + thisId,
@@ -192,8 +174,7 @@ $(function () {
             .then(function (data) {
                 // Log the response
                 console.log(data);
-                // Empty the notes section
-                //location.href = "/saved"
+
                 location.href = "/"
 
 
