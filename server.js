@@ -47,9 +47,13 @@ app.use(news);
 
 
 // =============================================================
-mongoose.connect("mongodb://localhost/scrap", { useNewUrlParser: true });
-mongoose.set('debug', true);
-mongoose.Promise = global.Promise
+//mongoose.connect("mongodb://localhost/scrap", { useNewUrlParser: true });
+//mongoose.set('debug', true);
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrap";
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
+
 
   app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
